@@ -1,0 +1,84 @@
+# SOSNOVKA RP — Full Stack
+
+Полноценный портал и форум SRP: frontend + backend + SQLite + server-side sessions + роли + модерация.
+
+## Требования
+
+- Node.js 22.5+ (используется встроенный `node:sqlite`)
+- Никаких npm-зависимостей для запуска приложения не требуется.
+
+## Запуск
+
+```bash
+node server.js
+```
+
+Открой: `http://localhost:3000`
+
+Форум: `http://localhost:3000/forum` или `http://localhost:3000/forum/`
+Админ-панель: `http://localhost:3000/admin` (после входа с подходящей ролью)
+
+## Первый владелец
+
+После первого запуска создай владельца:
+
+```bash
+node scripts/create-admin.js
+```
+
+Скрипт попросит ник, email, пароль и Display Name. Пароль хранится только в виде scrypt-хеша.
+
+## Конфигурация
+
+Переменные окружения:
+
+- `PORT` — порт, по умолчанию 3000
+- `APP_ORIGIN` — публичный origin, например `https://forum.example.ru`
+- `NODE_ENV=production` — включает Secure cookie
+- `SESSION_DAYS` — срок сессии
+- `MAX_BODY_MB` — максимальный размер HTTP body
+- `ROBLOX_URL` — ссылка игры Roblox
+- `DISCORD_URL` — Discord проекта
+- `FORUM_URL=/forum` — маршрут форума
+- `SUPPORT_URL` — поддержка
+
+Для восстановления пароля в production подключи SMTP-почту через `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM`. В development одноразовая ссылка восстановления выводится в консоль сервера, чтобы можно было проверить flow без почтового сервиса.
+
+## Что реализовано
+
+- регистрация / вход / выход;
+- server-side sessions в SQLite;
+- HttpOnly + SameSite cookies;
+- CSRF double-submit protection;
+- rate limiting;
+- Пароли хешируются `scrypt` с уникальной солью;
+- профили, аватары, Display Name, bio;
+- 11 категорий форума;
+- создание тем и сохранение в SQLite;
+- сообщения, ответы, редактирование, удаление;
+- цитирование на клиенте;
+- жалобы;
+- поиск по темам, сообщениям, пользователям и категориям через backend/SQLite;
+- уведомления и SSE realtime;
+- роли Owner/Admin/Moderator/Helper/User;
+- серверная проверка прав;
+- warning / mute / ban / unban;
+- логи действий;
+- админ-панель API + базовый UI;
+- новости с CRUD API;
+- вложения и аватары с типо- и размерной проверкой;
+- 403/404/500 страницы;
+- loading / empty / error states;
+- адаптивный интерфейс;
+- CSP, security headers, path traversal protection;
+- SQLite WAL и индексы.
+
+## Важно
+
+`ROBLOX_URL` сейчас по умолчанию ведёт на главную Roblox, потому что конкретная ссылка игры не была задана. Для реальной игры укажи URL в окружении, например:
+
+```bash
+ROBLOX_URL=https://www.roblox.com/games/XXXXXXXXXX
+```
+
+Discord уже вынесен в конфигурацию.
